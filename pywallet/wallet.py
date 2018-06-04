@@ -35,8 +35,8 @@ def create_address(network='btctest', xpub=None, child=None, path=0):
             acct_pub_key, '{change}/{index}'.format(change=path, index=child))
 
         res = {
-            "path": "m/" + str(path) + "/" + str(keys[1].index),
-            "bip32_path": "m/44'/60'/0'/" + str(path) + "/" + str(keys[-1].index),
+            "path": "m/" + str(path) + "/" + str(child),
+            "bip32_path": "m/44'/60'/0'/" + str(path) + "/" + str(child),
             "address": keys[1].address()
         }
 
