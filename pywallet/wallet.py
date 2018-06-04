@@ -86,7 +86,7 @@ def get_network(network='btctest'):
     return BitcoinTestNet
 
 
-def create_wallet(network='btctest', seed=None, children=1):
+def create_wallet(network='btctest', seed=None, children=1, path=0):
     if seed is None:
         seed = generate_mnemonic()
 
@@ -120,7 +120,7 @@ def create_wallet(network='btctest', seed=None, children=1):
 
         child_wallet = create_address(
             network=network.upper(), xpub=wallet["xpublic_key"],
-            child=0, path=0)
+            child=0, path=path)
         wallet["address"] = child_wallet["address"]
         wallet["xpublic_key_prime"] = child_wallet["xpublic_key"]
 
@@ -128,7 +128,7 @@ def create_wallet(network='btctest', seed=None, children=1):
         for child in range(children):
             child_wallet = create_address(
                 network=network.upper(), xpub=wallet["xpublic_key"],
-                child=child, path=_path
+                child=child, path=path
             )
             wallet["children"].append({
                 "address": child_wallet["address"],
