@@ -30,14 +30,13 @@ def create_address(network='btctest', xpub=None, child=None, path=0):
 
     if network == 'ethereum' or network.upper() == 'ETH':
         acct_pub_key = HDKey.from_b58check(xpub)
-
         keys = HDKey.from_path(
             acct_pub_key, '{change}/{index}'.format(change=path, index=child))
 
         res = {
-            "path": "m/" + str(path) + "/" + str(child),
-            "bip32_path": "m/44'/60'/0'/" + str(path) + "/" + str(child),
-            "address": keys[1].address()
+            "path": "m/" + str(path) + "/" + str(keys[-1].index),
+            "bip32_path": "m/44'/60'/0'/" + str(path) + "/" + str(keys[-1].index),
+            "address": keys[-1].address()
         }
 
         if inspect.stack()[1][3] == "create_wallet":
@@ -87,7 +86,7 @@ def get_network(network='btctest'):
     return BitcoinTestNet
 
 
-def create_wallet(network='btctest', seed=None, children=1, path=0):
+def create_wallet(network='btctest', seed=None, children=1):
     if seed is None:
         seed = generate_mnemonic()
 
@@ -121,7 +120,7 @@ def create_wallet(network='btctest', seed=None, children=1, path=0):
 
         child_wallet = create_address(
             network=network.upper(), xpub=wallet["xpublic_key"],
-            child=0, path=path)
+            child=0, path=0)
         wallet["address"] = child_wallet["address"]
         wallet["xpublic_key_prime"] = child_wallet["xpublic_key"]
 
@@ -129,7 +128,7 @@ def create_wallet(network='btctest', seed=None, children=1, path=0):
         for child in range(children):
             child_wallet = create_address(
                 network=network.upper(), xpub=wallet["xpublic_key"],
-                child=child, path=path
+                child=child, path=_path
             )
             wallet["children"].append({
                 "address": child_wallet["address"],
